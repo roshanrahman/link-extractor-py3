@@ -34,6 +34,7 @@ else:
     
 
 extension = input("Enter the file extension the links must end with: ")
+extension = extension.replace(".", "")
 regex_string = "." + extension + "$"
 
 print("Fetching the webpage...")
