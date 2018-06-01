@@ -22,16 +22,6 @@ def println(str):
         print(str)
     return
 
-def printerr(str):
-    if(PRINT_ENABLED):
-        print('\x1b[0;31;40m' + str + '\x1b[0m')
-    return
-
-def printwarn(str):
-    if(PRINT_ENABLED):
-        print('\x1b[0;33;40m' + str + '\x1b[0m')
-    return
-
 def get_WRITE_FILE_NAME():
     file_name = input("Enter the file name where you want to store the fetched LINK_URLs: ").strip()
     if(len(file_name) == 0):
@@ -42,15 +32,16 @@ def get_WRITE_FILE_NAME():
         file_name = file_name + ".txt"
     WRITE_FILE_NAME = file_name
     
-if(len(sys.argv) == 1):
-    LINK_URL = input("Enter a valid URL: ")
-    WRITE_FILE_NAME = get_WRITE_FILE_NAME()
-else:
-    LINK_URL = sys.argv[1]
-    if(len(sys.argv) == 3):
-        WRITE_FILE_NAME = sys.argv[2]
-    else:
-        WRITE_FILE_NAME = get_WRITE_FILE_NAME()
+def get_LINK_URL():
+    if(len(sys.argv) == 1):
+        LINK_URL = input("Enter a valid URL: ")
+#    WRITE_FILE_NAME = get_WRITE_FILE_NAME()
+# else:
+#     LINK_URL = sys.argv[1]
+#     if(len(sys.argv) == 3):
+#         WRITE_FILE_NAME = sys.argv[2]
+#     else:
+#         WRITE_FILE_NAME = get_WRITE_FILE_NAME()
     
 
 def get_EXTENSION():
@@ -90,5 +81,5 @@ def get_RESULTS(url=LINK_URL, file=WRITE_FILE_NAME, extension=EXTENSION):
         sys.stdout = sys.__stdout__
         println("LINK_URLs written to file " + WRITE_FILE_NAME)
 
-printerr("This is an error")
+println("This is a normal text")
 exit(0)
