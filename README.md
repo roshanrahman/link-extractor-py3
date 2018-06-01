@@ -14,5 +14,5 @@ Example: `python link-extractor.py http://www.google.com link-list.txt`
 
 You will be asked to specify the file extension the link should end with. Leave it empty if you want __all__ links.
 
-Example: If you want pdf files, then specify `pdf`
+_Example: If you want pdf files, then specify `pdf`_
 
