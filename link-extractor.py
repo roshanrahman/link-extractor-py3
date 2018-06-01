@@ -16,9 +16,12 @@ web_text = ""
 write_file_name = "" 
 
 def get_write_file_name():
-    file_name = input("Enter the file where you want to store the fetched links: ")
+    file_name = input("Enter the file name where you want to store the fetched links: ").strip()
+    if(len(file_name) == 0):
+        print("You did not specify the file name. The results will be stored in link.txt")
+        return "link.txt"
     if("." not in file_name):
-        print("Seems like you have forgotten the extension for the file. It will be saved as a .txt.")
+        print("You didn't specify the file extension. It will be saved as a txt file.")
         file_name = file_name + ".txt"
     return file_name
     
@@ -33,8 +36,10 @@ else:
         write_file_name = get_write_file_name()
     
 
-extension = input("Enter the file extension the links must end with: ")
+extension = input("Enter the file extension the links must end with (ex. pdf, doc, mp3 etc): ")
 extension = extension.replace(".", "")
+if(len(extension) == 0):
+    print("No extension specified. All links on the webpage will be fetched.")
 regex_string = "." + extension + "$"
 
 print("Fetching the webpage...")
