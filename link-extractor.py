@@ -10,60 +10,106 @@ import urllib
 import re
 from bs4 import BeautifulSoup
 
-link= "" 
-link_list = []
-web_text = ""
-write_file_name = "" 
+# Determines if text will be printed on the console or not.
+PRINT_ENABLED = False
 
-def get_write_file_name():
-    file_name = input("Enter the file name where you want to store the fetched links: ").strip()
+
+def println(str):
+    if(PRINT_ENABLED):
+        print(str)
+    return
+
+
+def get_file_name():
+    file_name = input(
+        "Enter the file name where you want to store the fetched urls: ").strip()
     if(len(file_name) == 0):
-        print("You did not specify the file name. The results will be stored in link.txt")
-        return "link.txt"
+        println(
+            "You did not specify the file name. The results will be stored in results.txt")
+        return "results.txt"
     if("." not in file_name):
-        print("You didn't specify the file extension. It will be saved as a txt file.")
+        println(
+            "You didn't specify the file extension. It will be saved as a txt file.")
         file_name = file_name + ".txt"
     return file_name
-    
-if(len(sys.argv) == 1):
-    link = input("Enter a valid URL: ")
-    write_file_name = get_write_file_name()
-else:
-    link = sys.argv[1]
-    if(len(sys.argv) == 3):
-        write_file_name = sys.argv[2]
+
+
+def get_url():
+    url = input("Enter a valid URL: ")
+    regex = r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
+    if(re.search(regex, url)):
+        return url
     else:
-        write_file_name = get_write_file_name()
-    
+        println("Invalid URL\n")
+        return(get_url())
 
-extension = input("Enter the file extension the links must end with (ex. pdf, doc, mp3 etc): ")
-extension = extension.replace(".", "")
-if(len(extension) == 0):
-    print("No extension specified. All links on the webpage will be fetched.")
-regex_string = "." + extension + "$"
 
-print("Fetching the webpage...")
-try:
-    web_text = urllib.request.urlopen("https://github.com/EbookFoundation/free-programming-books/blob/master/free-programming-books.md")
-except:
-    print("Could not fetch the webpage.")
-    exit(0)
+def get_extension():
+    extension = input(
+        "Enter the file EXTENSION the URLs must end with (ex. pdf, doc, mp3 etc) or ignore: ")
+    extension = extension.replace(".", "")
+    if(len(extension) == 0):
+        println("No EXTENSION specified. All URLs on the webpage will be fetched.")
+    return extension
 
-print("Parsing using BeautifulSoup...")
-try:
-    web_obj = BeautifulSoup(web_text, "html5lib")
-    link_list = web_obj.findAll('a', attrs={'href': re.compile(regex_string)})
-except:
-    print("Could not parse the webpage.")
-    exit(0)
-    
-if(len(link_list) == 0):
-    print("No links were found.")
-else:
-    print("No. of links found: " + str(len(link_list)))
-    sys.stdout = open(write_file_name, "a+")
-    for link in link_list:
-        print(link.get('href'))
-    sys.stdout = sys.__stdout__
-    print("Links written to file " + write_file_name)
-exit(0)
+
+def get_all_links_by_soup(url, extension):
+
+    results = []
+    regex_string = '(http[s]?:\/\/)?[^\s(["<,>]*\.[^\s[",><]*' + \
+        '.' + extension + '$'
+
+    println("Fetching the webpage...")
+    soup = urllib.request.urlopen(url)
+
+    println("Parsing using BeautifulSoup...")
+    web_obj = BeautifulSoup(soup, "html5lib")
+    web_obj = web_obj.findAll('a', attrs={'href': re.compile(regex_string)})
+    for url in web_obj:
+        results.append(url.get('href'))
+    println("No of links found: " + str(len(results)))
+    return results
+
+
+def get_all_links_by_regex(url, extension):
+
+    results = []
+    regex_string = '(http[s]?:\/\/?[^\s(["<,>]*\.[^\s[",><]*' + \
+        '.' + extension + ')'
+
+    println("Fetching the webpage...")
+    soup = str(urllib.request.urlopen(url).read())
+
+    println("Capturing URLs using regex...")
+    results = re.findall(regex_string, soup)
+    println("No of links found: " + str(len(results)))
+    return results
+
+
+def write_results_to_file(results, filename):
+    if(len(results) == 0):
+        println("No URLs were found.")
+    else:
+        sys.stdout = open(filename, "a+")
+        for url in results:
+            print(url)
+        sys.stdout = sys.__stdout__
+        println("Results written to file " + filename)
+
+if __name__ == "__main__":
+
+    PRINT_ENABLED = True
+    try:
+        choice = int(input("Select option: \n1. Get all <a> links (using BeautifulSoup)\n2. Capture every URL in webpage text (using Regex)\n> "))
+    except:
+        println("Incorrect option.\n")
+        exit(0)
+
+    url = get_url()
+    extension = get_extension()
+    filename = get_file_name()
+
+    if(choice == 1):
+        write_results_to_file(get_all_links_by_soup(url, extension), filename)
+    elif(choice == 2):
+        write_results_to_file(get_all_links_by_regex(url, extension), filename)
