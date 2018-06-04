@@ -1,4 +1,4 @@
-# link-extractor.py
+# linkextractor.py
 
 A simple python script that extracts all links from a URL, uses BeautifulSoup and regex modules
 
@@ -6,9 +6,9 @@ A simple python script that extracts all links from a URL, uses BeautifulSoup an
 
 Run the python script from its location, with arguments (optional):
 
-`python link-extractor.py [URL] [FILE-TO-STORE-LINKS-TO]`
+`python linkextractor.py [URL] [FILE-TO-STORE-LINKS-TO]`
 
-Example: `python link-extractor.py http://www.google.com link-list.txt`
+Example: `python linkextractor.py http://www.google.com link-list.txt`
 
 *If the arguments are not specified, the script will ask you.*
 
