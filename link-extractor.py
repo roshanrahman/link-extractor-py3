@@ -5,6 +5,7 @@ Created on Sun May 13 16:26:52 2018
 @author: Roshan
 """
 
+import sys
 import urllib
 import re
 from bs4 import BeautifulSoup
@@ -35,20 +36,20 @@ def get_file_name():
 
 def get_url():
     url = input("Enter a valid URL: ")
-    regex = r "https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
+    regex = r"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)"
     if(re.search(regex, url)):
         return url
     else:
         println("Invalid URL\n")
-        get_url()
+        return(get_url())
 
 
 def get_extension():
     extension = input(
-        "Enter the file EXTENSION the urls must end with (ex. pdf, doc, mp3 etc): ")
+        "Enter the file EXTENSION the URLs must end with (ex. pdf, doc, mp3 etc) or ignore: ")
     extension = extension.replace(".", "")
     if(len(extension) == 0):
-        println("No EXTENSION specified. All urls on the webpage will be fetched.")
+        println("No EXTENSION specified. All URLs on the webpage will be fetched.")
     return extension
 
 
@@ -56,7 +57,7 @@ def get_all_links_by_soup(url, extension):
 
     results = []
     regex_string = '(http[s]?:\/\/)?[^\s(["<,>]*\.[^\s[",><]*' + \
-        '.' + EXTENSION + '$'
+        '.' + extension + '$'
 
     println("Fetching the webpage...")
     soup = urllib.request.urlopen(url)
@@ -66,26 +67,28 @@ def get_all_links_by_soup(url, extension):
     web_obj = web_obj.findAll('a', attrs={'href': re.compile(regex_string)})
     for url in web_obj:
         results.append(url.get('href'))
+    println("No of links found: " + str(len(results)))
     return results
 
 
 def get_all_links_by_regex(url, extension):
 
     results = []
-    regex_string = '(http[s]?:\/\/)?[^\s(["<,>]*\.[^\s[",><]*' + \
-        '.' + EXTENSION
+    regex_string = '(http[s]?:\/\/?[^\s(["<,>]*\.[^\s[",><]*' + \
+        '.' + extension + ')'
 
     println("Fetching the webpage...")
-    soup = urllib.request.urlopen(url)
+    soup = str(urllib.request.urlopen(url).read())
 
     println("Capturing URLs using regex...")
     results = re.findall(regex_string, soup)
+    println("No of links found: " + str(len(results)))
     return results
 
 
 def write_results_to_file(results, filename):
     if(len(results) == 0):
-        println("No urls were found.")
+        println("No URLs were found.")
     else:
         sys.stdout = open(filename, "a+")
         for url in results:
@@ -97,13 +100,16 @@ if __name__ == "__main__":
 
     PRINT_ENABLED = True
     try:
-        choice = int(input("Select option: \n1. Get all <a> links (using BeautifulSoup)\n2. Capture every URL in webpage text (using Regex)"))
+        choice = int(input("Select option: \n1. Get all <a> links (using BeautifulSoup)\n2. Capture every URL in webpage text (using Regex)\n> "))
     except:
         println("Incorrect option.\n")
         exit(0)
 
-    if(choice == 1):
-        write_results_to_file(get_all_links_by_soup(get_url(), get_extension()), get_file_name())
-    elif(choice == 2):
-        write_results_to_file(get_all_links_by_regex(get_url(), get_extension()), get_file_name())
+    url = get_url()
+    extension = get_extension()
+    filename = get_file_name()
 
+    if(choice == 1):
+        write_results_to_file(get_all_links_by_soup(url, extension), filename)
+    elif(choice == 2):
+        write_results_to_file(get_all_links_by_regex(url, extension), filename)
