@@ -25,7 +25,7 @@ def println(str):
 def get_file_name():
     '''Gets a file name from the user. Requires text file format. If extension is not specified, 
     it will use txt instead. If nothing is specified, file 'results.txt' will be used instead.
-    
+
     RETURNS: A file name with extension, of type str
     '''
 
@@ -45,7 +45,7 @@ def get_file_name():
 def get_url():
     '''Gets a valid URL from the user. Requires URL to begin with http or https. If the URL entered is invalid,
     the function recursively attempts to get a valid URL.
-    
+
     RETURNS: A regex-matched URL, of type str
     '''
     url = input("Enter a valid URL: ")
@@ -60,7 +60,7 @@ def get_url():
 def get_extension():
     '''Gets a valid extension from the user. If the extension is not specified, it returns an empty string.
     Removes all dots the user may enter.
-    
+
     RETURNS: An extension with all dots removed, of type str.
     '''
     extension = input(
@@ -75,7 +75,7 @@ def get_all_links_by_soup(url, extension):
     '''Fetches all links from the webpage located by the URL, that end with the extension specified.
     Uses BeautifulSoup to retrieve all href links from the <a> tags in the source code. If no links
     are fetched, the returned list is empty.
-    
+
     RETURNS: A list containing the fetched links.
     '''
     results = []
@@ -98,7 +98,7 @@ def get_all_links_by_regex(url, extension):
     '''Fetches all links from the webpage located by the URL, that end with the extension specified.
     Uses Regex to retrieve all the matching links in the source code. If no links
     are fetched, the returned list is empty.
-    
+
     RETURNS: A list containing the fetched links.
     '''
     results = []
@@ -130,17 +130,34 @@ def write_results_to_file(results, filename):
 
 if __name__ == "__main__":
 
+    
+        
     PRINT_ENABLED = True
-    try:
-        choice = int(input(
-            "Select option: \n1. Get all <a> links (using BeautifulSoup)\n2. Capture every URL in webpage text (using Regex)\n> "))
-    except:
-        println("Incorrect option.\n")
-        exit(0)
+    
 
-    url = get_url()
-    extension = get_extension()
-    filename = get_file_name()
+    if(len(sys.argv) == 5):
+        url = sys.argv[1]
+        extension = sys.argv[2]
+        filename = sys.argv[3]
+        if("regex" in sys.argv[4].lower()):
+            choice = 2
+        else:
+            choice = 1
+        print("Arguments recieved: ")
+        print("URL: " + url)
+        print("Extension: " + extension)
+        print("File to store results in: " + filename)
+    else:
+        url = get_url()
+        extension = get_extension()
+        filename = get_file_name()
+        try:
+            choice = int(input(
+            "Select option: \n1. Get all <a> links (using BeautifulSoup)\n"
+            "2. Capture every URL in webpage text (using Regex)\n> "))
+        except:
+            println("Incorrect option.\n")
+            exit(0)
 
     if(choice == 1):
         write_results_to_file(get_all_links_by_soup(url, extension), filename)
