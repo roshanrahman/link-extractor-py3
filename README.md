@@ -17,26 +17,34 @@ pip install beautifulsoup4
 
 ### Run the python script from its location:
 
-The script will ask you the following:
-1. #### Mode of fetching links:
+Just run the script from its location, without passing any arguments and it will ask you the parameters it requires during execution.
 
-    * Beautiful Soup - fetches all links in \<a\> tags in the source code.
-    * Regular Expressions - fetches all links wherever located in the source code. (fetches more links)
+__Parameters supported:__
+You can also easily run the script by calling it with the following parameters:
 
-2. #### URL:
+    python linkextractor.py [URL] [EXTENSION] [FILENAME] [SOUP/REGEX]
+
+The script requires the following parameters:
+
+1. #### URL:
     
     A valid URL must be specified.
 
-3. #### Extension:
+2. #### Extension:
 
     The extension the URL must end with.
     Example, to fetch all links to PDFs, enter `pdf`
     
     Leave it empty if you want __all__ links.
 
-4. #### File where results must be stored:
+3. #### File where results must be stored:
 
     A valid file name must be specified. The script will record all fetched links in the specified file. By default, it will write to `results.txt`
+
+4. #### Mode of fetching links:
+
+    * Beautiful Soup - fetches all links in \<a\> tags in the source code.
+    * Regular Expressions - fetches all links wherever located in the source code. (fetches more links)
 
 ### Use from another script:
 
