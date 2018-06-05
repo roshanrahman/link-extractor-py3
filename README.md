@@ -22,7 +22,7 @@ Just run the script from its location, without passing any arguments and it will
 __Parameters supported:__
 You can also easily run the script by calling it with the following parameters:
 
-    python linkextractor.py [URL] [EXTENSION] [FILENAME] [SOUP/REGEX]
+    python linkextractor.py [URL] [EXTENSION] [FILENAME] ["soup"/"regex"]
 
 The script requires the following parameters:
 
